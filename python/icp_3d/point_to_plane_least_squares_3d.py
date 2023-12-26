@@ -14,6 +14,7 @@ if __name__ == '__main__':
     t = np.array([0., 0., 0.])
     error_prev = 1e8
     for _ in range(100):
+
         h = np.zeros((6, 6))
         for p, n0 in zip(pc_moved, pc_fixed_normals):
             h += utils.h(p, fi, n0[0:3])

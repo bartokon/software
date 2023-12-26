@@ -1,12 +1,11 @@
 import numpy as np
 import point_to_point_utils_3d as utils
-import time
 
 if __name__ == '__main__':
     pc_fixed = (np.random.rand(1000, 3) - 0.5) * 10
 
-    fi = utils.deg_to_rad(np.array([10., -5., 2.])) # ROT X ROT Y ROT Z
-    t = np.array([50., -10., 20.])
+    fi = utils.deg_to_rad(np.array([10., -5., 2.]))
+    t = np.array([45., -10., 20.])
 
     pc_moved = utils.rotate_pc_3d(pc_fixed, fi)
     pc_moved = utils.translate_pc_3d(pc_moved, t)

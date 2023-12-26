@@ -44,7 +44,6 @@ def b(p0, p1, fi, T):
     e = error_vector(p0, p1, fi, T)
     return j.T @ e
 
-#ROLL X ROLL Y ROLL Z
 def euler_angles_to_rotation_matrix(deg: np.array) -> np.array:
     """Get Euler angles from rotation matrix."""
     a = deg[0]

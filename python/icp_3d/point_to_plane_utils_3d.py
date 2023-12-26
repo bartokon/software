@@ -12,7 +12,7 @@ def plot_3d_point_clouds(*args):
     #ax.set_ylim(-10, 10)
     #ax.set_zlim(-10, 10)
     for pc, label in args:
-        ax.scatter(xs=pc[:, 0], ys=pc[:, 1], zs=pc[:, 2], label=label, s=1)
+        ax.scatter(xs=pc[:, 0], ys=pc[:, 1], zs=pc[:, 2], label=label)
     plt.legend()
     plt.show()
 
@@ -34,7 +34,7 @@ def translate_pc_3d(pc, T):
 
 def error_vector(p0, p1, fi, T, n0):
     R = euler_angles_to_rotation_matrix(fi)
-    return (R @ p1 + T - p0)*n0
+    return (R @ p1 + T - p0) * n0
 
 def h(p1, fi, n0):
     j = jackobian_error_vector(p1, fi, n0)
@@ -80,6 +80,7 @@ def jackobian_error_vector(p1, deg, n0):
     y = p1[1]
     z = p1[2]
 
+    #Original rotation matrix
     #r11 = np.cos(c) * np.cos(b)
     #r12 = np.sin(a) * np.sin(b) * np.cos(c) - np.cos(a) * np.sin(c)
     #r13 = np.cos(a) * np.sin(b) * np.cos(c) + np.sin(a) * np.sin(c)
@@ -90,6 +91,7 @@ def jackobian_error_vector(p1, deg, n0):
     #r32 = np.sin(a) * np.cos(b)
     #r33 = np.cos(a) * np.cos(b)
 
+    #DERIVATIVES
     r00_a =  0
     r01_a =  np.cos(a) * np.sin(b) * np.cos(c) + np.sin(a) * np.sin(c)
     r02_a = -np.sin(a) * np.sin(b) * np.cos(c) + np.cos(a) * np.sin(c)
