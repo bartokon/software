@@ -1,4 +1,3 @@
-
 import numpy as np
 import point_to_point_utils_2d as utils
 import time
