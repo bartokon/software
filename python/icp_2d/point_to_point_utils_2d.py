@@ -22,6 +22,7 @@ def create_r(fi):
     ))
     return R
 
+
 def distance_2d(p0, p1):
     return np.sqrt((p0[0]-p1[0])**2 + (p0[1]-p1[1])**2)
 
@@ -83,3 +84,9 @@ def unified(p0, p1, fi, T):
     h = j_t @ j
     b = j_t @ e
     return h, b
+
+def rad_to_deg(rad):
+    return (rad * 180) / np.pi
+
+def deg_to_rad(deg):
+    return (deg * np.pi) / 180
