@@ -60,6 +60,18 @@ def b(p0, p1, fi, T):
     return j.T @ e
 
 def unified(p0, p1, fi, T):
+    #Input
+    #P0 = [x, y]
+    #P1 = [y, y]
+    #FI = x
+    #T = [x, y]
+    #Returns
+    #h = [
+    #        [a, b, c],
+    #        [d, e, f],
+    #        [g, h, i]
+    #    ]
+    #b = [a, b, c]
     def u(p0, p1, fi, T):
         sin_fi = np.sin(fi)
         cos_fi = np.cos(fi)
@@ -73,16 +85,18 @@ def unified(p0, p1, fi, T):
         sin_fi_p11 = sin_fi * p1[1]
         n_sin_fi_p10_n_fi_p11 = -sin_fi_p10 - cos_fi_p11
         cos_fi_p10_n_sin_fi_p11 = cos_fi_p10 - sin_fi_p11
-        j = np.array([
-            [1, 0, n_sin_fi_p10_n_fi_p11],
-            [0, 1, cos_fi_p10_n_sin_fi_p11]
-        ])
-        e = R @ p1 + T - p0
-        return e, j, j.T
 
-    e, j, j_t = u(p0, p1, fi, T)
-    h = j_t @ j
-    b = j_t @ e
+        p1_rotated = np.array([R[0,0]*p1[0]+R[0,1]*p1[1], R[1,0]*p1[0]+R[1,1]*p1[1]])
+        e = np.array([p1_rotated[0]+T[0]-p0[0], p1_rotated[1]+T[1]-p0[1]])
+
+        h = np.array([
+            [1, 0, n_sin_fi_p10_n_fi_p11],
+            [0, 1, cos_fi_p10_n_sin_fi_p11],
+            [n_sin_fi_p10_n_fi_p11, cos_fi_p10_n_sin_fi_p11, n_sin_fi_p10_n_fi_p11**2 + cos_fi_p10_n_sin_fi_p11**2]
+        ])
+        b = np.array([e[0], e[1], n_sin_fi_p10_n_fi_p11*e[0]+cos_fi_p10_n_sin_fi_p11*e[1]])
+        return h, b
+    h, b = u(p0, p1, fi, T)
     return h, b
 
 def rad_to_deg(rad):
