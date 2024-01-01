@@ -104,3 +104,14 @@ def rad_to_deg(rad):
 
 def deg_to_rad(deg):
     return (deg * np.pi) / 180
+
+def det_3x3(h):
+    h_inv_0 = h[0,0] * ((h[1,1]*h[2,2]) - (h[1,2]*h[2,1]))
+    h_inv_1 = h[0,1] * ((h[1,0]*h[2,2]) - (h[1,2]*h[2,0]))
+    h_inv_2 = h[0,2] * ((h[1,0]*h[2,1]) - (h[1,1]*h[2,0]))
+    h_det = h_inv_0 - h_inv_1 + h_inv_2
+    return h_det
+
+def det_2x2(h):
+    det = h[0,0]*h[1,1] - h[0,1]*h[1,0]
+    return det
