@@ -11,8 +11,8 @@ if __name__ == '__main__':
     pc_moved = utils.rotate_pc_2d(pc_fixed, fi)
     pc_moved = utils.translate_pc_2d(pc_moved, t)
     iters = 10000
-    start_time = time.time()
-    if 1:
+    if 0:
+        start_time = time.time()
         fi = 0.
         t = np.array([0., 0.])
         for _ in range(iters):
@@ -45,8 +45,8 @@ if __name__ == '__main__':
         print(f"NEW FI: {fi}")
         print(f"error: {error}")
 
-    start_time = time.time()
-    if 1:
+    if 0:
+        start_time = time.time()
         fi = 0.
         t = np.array([0., 0.])
         for _ in range(iters):
