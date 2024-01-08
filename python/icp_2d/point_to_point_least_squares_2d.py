@@ -1,16 +1,56 @@
 import numpy as np
 import point_to_point_utils_2d as utils
 import time
+from scipy.spatial import KDTree
+from copy import deepcopy
+import experimental
+
+def is_point_in_circle(center, radius, point):
+    a = center[0]
+    b = center[1]
+    x = point[0]
+    y = point[1]
+    distance = ((x - a)**2 + (y - b)**2)**0.5
+    if distance <= radius:
+        return True
+    else:
+        return False
+
+def near(a, b, c):
+    d = np.abs(np.array(a) - np.array(b))
+    if ((d < c).all()):
+        return True
+    else:
+        return False
+
+def cubic(x):
+    return x**3
+
+def parable(x):
+    return x**2
+
+def sin(x):
+    return np.sin(x)
+
+def cos(x):
+    return np.cos(x)
 
 if __name__ == '__main__':
-    pc_fixed = (np.random.rand(1000, 2) - 0.5) * 10
+    pc_len = 500
+    #pc_fixed = (np.random.rand(pc_len, 2) - 0.5) * 100
+    #pc_fixed = np.array([[x, parable(x)*sin(x)*cos(x)] for x in np.linspace(-10, 10, num=pc_len)])
+    pc_fixed = np.array([[x, -sin(x)*parable(x)] for x in np.linspace(-5, 5, num=pc_len)])
 
-    fi = 21.
-    t = np.array([4, -5])
+    fi = utils.deg_to_rad(40)
+    t = np.array([10, -5])
+    pc_moved = pc_fixed + np.random.normal(0, 0.0, size=(pc_len, 2)) #Add noise
+    pc_moved_noise = deepcopy(pc_moved)
+    minimum_error = utils.sum_distance_2d(pc_fixed, pc_moved)
 
-    pc_moved = utils.rotate_pc_2d(pc_fixed, fi)
+    pc_moved = utils.rotate_pc_2d(pc_moved, fi)
     pc_moved = utils.translate_pc_2d(pc_moved, t)
-    iters = 10000
+
+    iters = 1000
     if 0:
         start_time = time.time()
         fi = 0.
@@ -33,9 +73,6 @@ if __name__ == '__main__':
             pc_corrected = utils.rotate_pc_2d(pc_moved, fi)
             pc_corrected = utils.translate_pc_2d(pc_corrected, t)
             error = utils.sum_distance_2d(pc_fixed, pc_corrected)
-            #print(f"NEW T: {t}")
-            #print(f"NEW FI: {fi}")
-            #print(f"error: {error}")
             if error < 1e-8:
                 break
         stop_time = time.time()
@@ -44,6 +81,7 @@ if __name__ == '__main__':
         print(f"NEW T: {t}")
         print(f"NEW FI: {fi}")
         print(f"error: {error}")
+        fi = utils.rad_to_deg(fi)
 
     if 0:
         start_time = time.time()
@@ -100,7 +138,21 @@ if __name__ == '__main__':
         print(f"NEW T: {t}")
         print(f"NEW FI: {fi}")
         print(f"error: {error}")
+        fi = utils.rad_to_deg(fi)
 
-    pc_corrected = utils.rotate_pc_2d(pc_moved, fi)
+    if 1:
+        #shuffle pc_moved and pc_fixed
+        np.random.shuffle(pc_fixed)
+        np.random.shuffle(pc_moved)
+        #Does not work if data is symmetrical, angles are not enough?
+        t, fi = experimental.icp_hist(pc_fixed, pc_moved, iters, 15)
+
+    pc_corrected = utils.rotate_pc_2d(pc_moved, utils.deg_to_rad(fi))
     pc_corrected = utils.translate_pc_2d(pc_corrected, t)
-    utils.plot_2d_point_clouds((pc_fixed, "fixed", "*", 500), (pc_moved, "moved", "x", 100), (pc_corrected, "corrected", "o", 100))
+    print(f"Minimum error: {minimum_error}")
+    utils.plot_2d_point_clouds(
+        (pc_fixed, "fixed", "s", 100),
+        (pc_moved, "moved", "+", 100),
+        (pc_corrected, "corrected", "x", 100),
+        (pc_moved_noise, "noise", ".", 100)
+    )

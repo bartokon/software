@@ -6,8 +6,8 @@ def plot_2d_point_clouds(*args):
     ax = fig.add_subplot()
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
-    ax.set_xlim(-10, 10)
-    ax.set_ylim(-10, 10)
+    #ax.set_xlim(-10, 10)
+    #ax.set_ylim(-10, 10)
     plt.axhline(y=0, color='black', linestyle='-')
     plt.axvline(x=0, color='black', linestyle='-')
     for pc, label, marker, s in args:
