@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "vadd.cu"
+#include "vadd.hpp"
 
 void init_array(int *array, unsigned int size) {
     for (unsigned int i = 0; i < size; ++i) {
@@ -11,15 +11,16 @@ void init_array(int *array, unsigned int size) {
 int check_array(int *array, unsigned int size) {
     for (unsigned int i = 0; i < size; ++i) {
         if (array[i] != i * 2) {
-            printf("Kernel failed.");
+            printf("Kernel failed.\n");
             return 1;
         };
     }
-    printf("All good.");
+    printf("All good.\n");
     return 0;
 };
 
-int main(void){
+int main (void) {
+
     static int a[1024];
     static int b[1024];
     static int c[1024];
