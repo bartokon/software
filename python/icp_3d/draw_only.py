@@ -126,7 +126,7 @@ class point_information:
             arw = Arrow3D([x, x - a], [y, y - b], [z, z - c], arrowstyle="->", color="purple", lw = 0.5, mutation_scale=25)
         self.ax.add_artist(arw)
 
-def SIFT_3D(pc, radius = 1, lim=0.1, min_points = 0):
+def extract_points(pc, radius = 1, lim=0.1, min_points = 0):
     QUERY_POINTS = 256
     tree = KDTree(pc, balanced_tree=True)
     point_list = []
@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
     #pc_fixed = np.array([[np.sin(i), i, 0] for i in np.arange(start=-np.pi, stop=np.pi, step=0.005)])
 
-    s0 = SIFT_3D(pc_fixed, radius=0.5, lim=0.065, min_points=3)
+    s0 = extract_points(pc_fixed, radius=0.5, lim=0.065, min_points=3)
 
     fig = plt.figure(figsize=plt.figaspect(2.))
     ax = fig.add_subplot(1, 1, 1, projection="3d")
