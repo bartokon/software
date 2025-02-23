@@ -70,12 +70,15 @@ def draw_voxel(voxels: list[int]):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     xs, ys, zs, cs = get_xs_ys_cs(voxels)
+    cs = torch.tensor(cs) / max(cs)
     ax.scatter(
         xs,
         ys,
         zs,
-        marker="s",
-        s=64
+        c = cs,
+        #alpha = cs,
+        marker = "s",
+        s = 64
     )
     plt.show(block=False)
 

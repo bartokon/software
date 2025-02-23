@@ -19,9 +19,6 @@ def train():
     total_loss = 0
     for i, (input_0, output_0, raw_0) in enumerate(tqdm(train_loader, desc="Train", leave=False)):
         optimizer.zero_grad(True)
-        #with torch.autocast(device_type='cuda', dtype=torch.float16):
-            #input_0.to(device='cuda')
-            #output_0.to(device='cuda')
         logits = model(
             input_0
         )
@@ -41,15 +38,12 @@ def test():
     metrics_test.reset()
     total_loss = 0
     for i, (input_0, output_0, raw_0) in enumerate(tqdm(test_loader, desc="Test", leave=False)):
-        #input_0.to(device='cuda')
-        #output_0.to(device='cuda')
         logits = model(
             input_0
         )
         loss = criterion(logits, output_0)
         total_loss += float(loss) / test_loader.batch_size
         metrics_test.update(logits, output_0)
-    #tqdm.write(f"{torch.abs(torch.sub(logits, output_0))}")
     metrics_test.append_mem(metrics_test.compute().cpu())
     return (total_loss / (i+1)), torch.abs(logits-output_0)
 
@@ -68,15 +62,12 @@ if __name__=="__main__":
         test_dataset = torch.utils.data.Subset(test_dataset, generate_non_repeating_integers_numpy(samples))
     train_loader = DataLoader(train_dataset, batch_size = 64, shuffle = True)
     test_loader = DataLoader(test_dataset, batch_size = 64)
-    #test_loader = DataLoader(train_dataset, batch_size = 64)
 
-    #model = FullNet()
-    model = torch.load("models/model_23.mod")
+    model = FullNet()
+    #model = torch.load("models/model_23.mod")
     model.to(device='cuda')
-    #model = torch.compile(model, dynamic=False, fullgraph=False)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.005, amsgrad=True)
-    #optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.1)
     criterion = torch.nn.MSELoss(reduction = 'mean')
     metrics_train = metrics_mse(threshold = 5)
     metrics_test = metrics_mse(threshold = 5)
@@ -146,9 +137,9 @@ if __name__=="__main__":
             epoch
         )
         plt.ion()
-        torch.save(model, f"models/model_{epoch}.mod")
+        torch.save(model, f"model_checkpoint/model_{epoch}.mod")
 
 
     fig.savefig(f"logs/log_{epoch}.pdf")
     plt.waitforbuttonpress()
-    torch.save(model, "model.mod")
+    torch.save(model, "model_checkpoint/model_last.mod")

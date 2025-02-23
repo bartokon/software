@@ -3,12 +3,6 @@ os.environ["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
 
 from os import listdir
 from os.path import isfile, join
-from copy import deepcopy
-
-from tqdm import tqdm
-from p_tqdm import p_umap
-from random import uniform
-from numpy import linspace
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -16,9 +10,9 @@ from torch_geometric.transforms import SamplePoints, KNNGraph, Compose
 from torch_geometric.io import read_off
 
 from rotate import Rotate
-from functools import partial
+
 import random
-from my_voxel import voxelize, draw_voxel_pair
+from my_voxel import voxelize
 
 #TODO: make it as classification problem
 #TODO: check classes distribution!
@@ -50,6 +44,9 @@ class ModelNet40_n3(Dataset):
         return file_names
 
     def download(self):
+        wget https://lmb.informatik.uni-freiburg.de/resources/datasets/ORION/modelnet40_manually_aligned.tar
+        tar -xvf modelnet40_manually_aligned.at
+
         pass
 
     def __len__(self):
@@ -59,9 +56,8 @@ class ModelNet40_n3(Dataset):
         pass
 
     def __getitem__(self, index):
-        #print(index)
         if (not isfile(self.processed_dir + "/" + self.processed_file_names[index])):
-            vox_count = 2**5
+            vox_count = 2**4
             data = read_off(self.raw_dir + "/" + self.raw_file_names[index])
             degs = [random.randrange(0, 90), random.randrange(0, 90), random.randrange(0, 90)]
             base_transform = Compose([
@@ -87,7 +83,6 @@ class ModelNet40_n3(Dataset):
 
         data = torch.load(self.processed_dir + "/" + self.processed_file_names[index])
         return data[0].to(device='cuda'), data[1].to(device='cuda'), data[2].to(device='cpu')
-        #return data[0].to(device='cuda'), data[1].to(device='cuda')
 
 def funer_0(i):
     data = dataset_train[i]

@@ -1,11 +1,10 @@
 from os.path import exists
 import numpy as np
-from dataset_torchstudio import ModelNet40_n3
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.ensemble import GradientBoostingRegressor, AdaBoostRegressor
+from dataset_torchstudio_small_voxel import ModelNet40_n3
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.multioutput import MultiOutputRegressor
-import xgboost as xgb
-from sklearn.model_selection import GridSearchCV
+
 def get_data(dataset, name = ""):
     if (exists(f"{name}_x.npy") and exists(f"{name}_y.npy")):
         return np.load(f"{name}_x.npy"), np.load(f"{name}_y.npy")
