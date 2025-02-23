@@ -169,22 +169,22 @@ def get_val_from_dataset_test(i):
 if __name__ == "__main__":
     classes = [f.name for f in pathlib.Path("dataset").iterdir() if f.is_dir()]
     #classes = ["airplane", "bed"]
-    dataset_train = ModelNet40_aligned(
-        root = "dataset",
-        classes = classes,
-        train = True,
-        transform = None,
-        target_transform = None,
-        download = True
-    )
-    pool = p_umap(
-        get_val_from_dataset_train,
-        range(0, len(dataset_train))
-    )
+    #dataset_train = ModelNet40_aligned(
+        #root = "dataset",
+        #classes = classes,
+        #train = True,
+        #transform = None,
+        #target_transform = None,
+        #download = True
+    #)
+    #pool = p_umap(
+        #get_val_from_dataset_train,
+        #range(0, len(dataset_train))
+    #)
     dataset_test = ModelNet40_aligned(
         root = "dataset",
         classes = classes,
-        train = True,
+        train = False,
         transform = None,
         target_transform = None,
         download = True
