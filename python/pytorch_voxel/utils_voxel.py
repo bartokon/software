@@ -1,54 +1,5 @@
 import torch
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from torch_geometric.io import read_off
-from torch_geometric.transforms import SamplePoints, KNNGraph, Compose
-import numpy as np
-
-from rotate import Rotate
-
-def voxelize(pos, vox_count: int = 1):
-    #POS is 0 - 1
-    vox_array = torch.zeros((vox_count, vox_count, vox_count))
-    #print(vox_array.shape)
-
-    points = pos
-    # Define bin edges
-    bin_edges = np.linspace(0, 1, num=vox_count, endpoint=False)
-
-    # Bucketize each dimension
-    #print(points[:, 0])
-    #print(points[:, 1])
-    #print(points[:, 2])
-    x_buckets = np.digitize(points[:, 0], bin_edges) - 1
-    y_buckets = np.digitize(points[:, 1], bin_edges) - 1
-    z_buckets = np.digitize(points[:, 2], bin_edges) - 1
-
-    #print(bin_edges)
-    #print(x_buckets)
-
-    for a, b, c in zip(x_buckets, y_buckets, z_buckets):
-        vox_array[a, b, c] += 1
-    #print(vox_array.shape)
-    vox_array = torch.tensor(vox_array, dtype=torch.float32)
-    vox_array = vox_array / torch.max(vox_array)
-    return vox_array
-
-def rotate_and_sample_and_voxelize(data, degs: list[int] = [0, 0, 0], points: int = 1024, vox_count: int = 64):
-    base_transform = Compose([
-    SamplePoints(num = points, include_normals = True),
-    KNNGraph(k=6)
-    ])
-    rotate_transform = Compose([
-        Rotate(degrees=degs[0], axis=0),
-        Rotate(degrees=degs[1], axis=1),
-        Rotate(degrees=degs[2], axis=2),
-        base_transform
-    ])
-    r = rotate_transform(data)
-    r.pos -= r.pos.min()
-    r.pos /= r.pos.max()
-    return voxelize(r.pos, vox_count)
 
 def draw_voxel(voxels: list[int]):
     def get_xs_ys_cs(voxel: list[int]):
@@ -120,10 +71,3 @@ def draw_voxel_pair(voxels_0: list[int], voxels_1: list[int], epoch):
         alpha=1
     )
     fig.savefig(f"logs/latest_{epoch}.pdf")
-    #plt.show(block=False)
-
-if __name__ == "__main__":
-    data = read_off("data_train/raw/airplane_0002.off")
-    draw_voxel(rotate_and_sample_and_voxelize(data, degs=[0, 0, 0], points=2**18, vox_count=2**7))
-    draw_voxel(rotate_and_sample_and_voxelize(data, degs=[0, 0, 0], points=2**18, vox_count=2**7))
-    plt.show()
