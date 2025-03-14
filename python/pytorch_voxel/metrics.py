@@ -16,9 +16,13 @@ class metrics_mse():
         self.mem = []
 
     def update(self, preds, target):
-        correct = torch.less(torch.abs(preds-target.float()),self.threshold).view(-1)
-        self.num_correct += torch.sum(correct)
-        self.num_samples += torch.tensor(correct.shape[0])
+        correct = []
+        for b in range(len(target)):
+            for i in range(len(target[b])):
+                if (target[b][i] == 1):
+                        correct.append(preds[b][i] >= (1 - self.threshold))
+        self.num_correct += torch.sum(torch.tensor(correct))
+        self.num_samples += torch.tensor(len(correct))
 
     def compute(self):
         return self.num_correct.float() / self.num_samples.float()
