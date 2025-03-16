@@ -12,6 +12,7 @@ import numpy as np
 from torch_geometric.transforms import SamplePoints
 from p_tqdm import p_umap
 from collections import Counter
+from sklearn.utils.class_weight import compute_class_weight
 
 class ModelNet40_aligned(Dataset):
     def __init__(self,
@@ -39,7 +40,7 @@ class ModelNet40_aligned(Dataset):
         self.classes_onehot = torch.nn.functional.one_hot(
             torch.tensor(range(0, len(self.classes))),
             len(self.classes)
-        )
+        ).bool()
         self.classes_lut = {
             class_name : (class_name, self.classes_onehot[index])
             for index, class_name in enumerate(self.classes)
@@ -180,28 +181,18 @@ class ModelNet40_aligned(Dataset):
             )
             weights_dict = dict(Counter(pool))
             torch.save(weights_dict, f"weights_{self.train}.pt")
-        else:
-            weights_dict = torch.load(f"weights_{self.train}.pt")
+        weights_dict = torch.load(f"weights_{self.train}.pt")
         weights_tensor = torch.tensor(
             [*weights_dict.values()],
             device = 'cuda'
         )
-        weights_tensor = weights_tensor / torch.max(weights_tensor)
+        weights_tensor = 1 / (weights_tensor / torch.max(weights_tensor))
         return weights_tensor
-
-
-def get_val_from_dataset_train(i):
-    input, output = dataset_train[i]
-    return output[0]
-
-def get_val_from_dataset_test(i):
-    input, output = dataset_test[i]
-    return output[0]
 
 if __name__ == "__main__":
     classes = [f.name for f in pathlib.Path("dataset").iterdir() if f.is_dir()]
-    if (1):
-        dataset_train = ModelNet40_aligned(
+    if (0):
+        dataset = ModelNet40_aligned(
             root = "dataset",
             classes = classes,
             train = True,
@@ -209,12 +200,8 @@ if __name__ == "__main__":
             target_transform = None,
             download = True
         )
-        pool = p_umap(
-            get_val_from_dataset_train,
-            range(0, len(dataset_train))
-       )
     else:
-        dataset_test = ModelNet40_aligned(
+        dataset = ModelNet40_aligned(
             root = "dataset",
             classes = classes,
             train = False,
@@ -222,9 +209,3 @@ if __name__ == "__main__":
             target_transform = None,
             download = True
         )
-        pool = p_umap(
-            get_val_from_dataset_test,
-            range(0, len(dataset_test))
-        )
-    weights_dict = dict(Counter(pool))
-    print(torch.tensor([*weights_dict.values()]) / torch.max(torch.tensor([*weights_dict.values()])))
