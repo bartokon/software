@@ -33,11 +33,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "Compiling $< to $@"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# Rule to compile object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.hpp
-	@echo "Compiling $< to $@"
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
 # Rule to link object files into the executable
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
