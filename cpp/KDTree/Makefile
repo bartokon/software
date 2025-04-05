@@ -45,7 +45,7 @@ $(TARGET): $(OBJS)
 
 # Clean rule: remove object files and the executable
 clean:
-#	rm -f $(OBJS)
+	rm -f $(OBJS)
 	rm -f $(TARGET)
 
 # Optional: run the executable
