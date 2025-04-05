@@ -30,6 +30,11 @@ public:
     bool operator==(Point_3D<T> const &other) const {
         return (this->x == other.x && this->y == other.y && this->z == other.z);
     }
+
+    Point_3D<T> operator*(Point_3D<T> const &other) const {
+        return Point_3D<T>(this->x * other.x, this->y * other.y, this->z * other.z);
+    }
+    
 };
 
 #endif

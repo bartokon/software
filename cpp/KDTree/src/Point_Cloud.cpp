@@ -28,7 +28,6 @@ public:
 
     // Generate random points in the cloud
     void generate_random_points(size_t const num_points) {
-        srand(time(0)); // Seed for random number generation
         for (size_t i = 0; i < num_points; ++i) {
             T const x = static_cast<T>(rand()) / RAND_MAX;
             T const y = static_cast<T>(rand()) / RAND_MAX;
