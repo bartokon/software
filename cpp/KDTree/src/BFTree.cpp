@@ -75,10 +75,12 @@ public:
     }
 
     void print() {
-        for (struct Point_with_neighbors<T> const &pwn : points_with_neighbors) {
+        for (struct Point_with_neighbors<T> const &pwn : this->points_with_neighbors) {
+            printf("/*******************/\n");
+            pwn.point.print();
             for (std::pair<Point_3D<T>, double> const &n : pwn.neighbors) {
-                printf("Point(%.3f, %.3f, %.3f) - Distance: %.3f\n",
-                    n.first.x, n.first.y, n.first.z,
+                printf("%s - Distance: %.3f\n",
+                    n.first.print_string().c_str(),
                     n.second
                 );
             }
