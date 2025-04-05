@@ -2,31 +2,16 @@
 #define BFTREE_HPP
 
 #include <vector>
+#include <queue>
 #include <cmath>
 #include <utility>
-#include <queue>
-#include <algorithm>
-#include "Point_3D.hpp"
+
+#include <Point_3D.cpp>
 
 template <class T>
 struct Point_with_neighbors {
-    struct Comparator {
-        bool operator()(
-            std::pair<Point_3D<T>, double> const &lhs,
-            std::pair<Point_3D<T>, double> const &rhs
-        ) const {
-            return lhs.second > rhs.second;
-        }
-    };
-
-    std::priority_queue<
-        std::pair<Point_3D<T>, double>,
-        std::vector<std::pair<Point_3D<T>, double>>,
-        Comparator
-    > neighbors_queue;
-
-    Point_with_neighbors(Point_3D<T> const &p)
-    : neighbors_queue(Comparator()) {}
+    Point_3D<T> point;
+    std::vector<std::pair<Point_3D<T>, double>> neighbors;
 };
 
 template <class T, size_t Neighbors = 4>
@@ -45,16 +30,38 @@ public:
     }
 
     struct Point_with_neighbors<T> search_nearest_neighbors(Point_3D<T> const &query_point) {
-        struct Point_with_neighbors<T> pwn{query_point};
+        struct Point_with_neighbors<T> pwn{
+            query_point,
+            std::vector<std::pair<Point_3D<T>, double>>()
+        };
+        struct Comparator {
+            bool operator()(
+                std::pair<Point_3D<T>, double> const &lhs,
+                std::pair<Point_3D<T>, double> const &rhs
+            ) const {
+                return lhs.second > rhs.second;
+            }
+        };
+        std::priority_queue<
+            std::pair<Point_3D<T>, double>,
+            std::vector<std::pair<Point_3D<T>, double>>,
+            Comparator
+        > neighbors_queue;
         for (Point_3D<T> const &p : points) {
             if (p == query_point) continue; // Skip the point itself
             double const distance = this->point_to_point_distance(query_point, p);
-            if (pwn.neighbors_queue.size() < Neighbors) {
-                pwn.neighbors_queue.push(std::make_pair(p, distance));
-            } else if (distance < pwn.neighbors_queue.top().second) {
-                pwn.neighbors_queue.pop();
-                pwn.neighbors_queue.push(std::make_pair(p, distance));
+            if (neighbors_queue.size() < Neighbors) {
+                neighbors_queue.push(std::make_pair(p, distance));
+            } else if (distance < neighbors_queue.top().second) {
+                neighbors_queue.pop();
+                neighbors_queue.push(std::make_pair(p, distance));
             }
+        }
+
+        // Transfer the points from the priority queue to the vector
+        while (!neighbors_queue.empty()) {
+            pwn.neighbors.push_back(neighbors_queue.top());
+            neighbors_queue.pop();
         }
         return pwn;
     }
@@ -69,7 +76,7 @@ public:
 
     void print() {
         for (struct Point_with_neighbors<T> const &pwn : points_with_neighbors) {
-            for (std::pair<Point_3D<T>, double> const &n : pwn.neighbors_queue) {
+            for (std::pair<Point_3D<T>, double> const &n : pwn.neighbors) {
                 printf("Point(%.3f, %.3f, %.3f) - Distance: %.3f\n",
                     n.first.x, n.first.y, n.first.z,
                     n.second

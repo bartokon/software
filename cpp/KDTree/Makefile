@@ -3,6 +3,7 @@ CC = g++-11
 
 # Compilation flags
 CFLAGS = -std=c++20 -Wall -Wextra -O2 -g
+#CFLAGS = -Wall -Wextra -O2 -g
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -12,11 +13,9 @@ INCLUDES = -I$(SRC_DIR)
 
 # Source files (adjust as needed)
 CPP_SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-HPP_SRCS = $(wildcard $(SRC_DIR)/*.hpp)
 
 # Object files (automatically generated from source files)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CPP_SRCS))
-OBJS += $(patsubst $(SRC_DIR)/%.hpp, $(OBJ_DIR)/%.o, $(HPP_SRCS))
 
 # Name of the final executable
 TARGET = main.elf

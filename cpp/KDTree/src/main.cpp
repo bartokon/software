@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Point_Cloud.hpp"
-#include "BFTree.hpp"
+#include <Point_Cloud.cpp>
+#include <BFTree.cpp>
 
 int main (void) {
     printf("Hello World!\n");

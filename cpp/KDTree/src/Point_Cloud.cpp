@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 
-#include "Point_3D.hpp"
+#include <Point_3D.cpp>
 
 template <class T>
 class Point_Cloud {
