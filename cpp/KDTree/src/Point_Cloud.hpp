@@ -28,6 +28,7 @@ public:
 
     // Generate random points in the cloud
     void generate_random_points(size_t const num_points) {
+        points.reserve(num_points);
         for (size_t i = 0; i < num_points; ++i) {
             T const x = static_cast<T>(rand()) / RAND_MAX;
             T const y = static_cast<T>(rand()) / RAND_MAX;
@@ -74,7 +75,7 @@ public:
             p.z = -p.x * sin_theta + p.z * cos_theta;
         }
     }
-    
+
     // Method to rotate the points in the cloud in Z axis
     void rotate_z(double const angle_degrees) {
         double const angle_radians = angle_degrees * M_PI / 180.0;
@@ -83,6 +84,22 @@ public:
         for (Point_3D<T> &p : points) {
             p.x = p.x * cos_theta - p.y * sin_theta;
             p.y = p.x * sin_theta + p.y * cos_theta;
+        }
+    }
+
+    void add_noise(double const noise) {
+        for (Point_3D<T> &p : points) {
+            p.x += static_cast<T>(rand()) / RAND_MAX * noise;
+            p.y += static_cast<T>(rand()) / RAND_MAX * noise;
+            p.z += static_cast<T>(rand()) / RAND_MAX * noise;
+        }
+    }
+
+    void add_noise(double const noise_x, double const noise_y, double const noise_z) {
+        for (Point_3D<T> &p : points) {
+            p.x += static_cast<T>(rand()) / RAND_MAX * noise_x;
+            p.y += static_cast<T>(rand()) / RAND_MAX * noise_y;
+            p.z += static_cast<T>(rand()) / RAND_MAX * noise_z;
         }
     }
 };

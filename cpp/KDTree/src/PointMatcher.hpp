@@ -72,7 +72,7 @@ public:
 
     // Method to match points based on manhattan distance
     void similarity(
-        double manhattan_distance_threshold = 0.1
+        double const manhattan_distance_threshold = 0.1
     ) {
         for (size_t i = 0; i < points_with_neighbors_0.size(); ++i) {
             struct Matched_Points<T> matched_point(

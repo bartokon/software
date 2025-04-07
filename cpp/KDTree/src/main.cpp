@@ -17,6 +17,7 @@ int main (void) {
     constexpr double ANGLE_DEGREES_X = 180.0;
     constexpr double ANGLE_DEGREES_Y = 0.0;
     constexpr double ANGLE_DEGREES_Z = 0.0;
+    constexpr double NOISE_LEVEL = 0.1;
 
     Point_Cloud<double> point_cloud_0;
     point_cloud_0.generate_random_points(NUM_POINTS);
@@ -32,6 +33,7 @@ int main (void) {
     point_cloud_1.rotate_x(ANGLE_DEGREES_X);
     point_cloud_1.rotate_y(ANGLE_DEGREES_Y);
     point_cloud_1.rotate_z(ANGLE_DEGREES_Z);
+    point_cloud_1.add_noise(NOISE_LEVEL);
 
     BFTree<double> BF_tree_1(point_cloud_1.get_points(), NEIGHBORS);
 
