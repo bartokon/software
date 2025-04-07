@@ -94,6 +94,7 @@ public:
                 if (md < matched_point.manhattan_distance) {
                     matched_point.manhattan_distance = md;
                     matched_point.cosine_similarity = cs;
+                    matched_point.point_1 = points_with_neighbors_1[j];
                 }
                 //Perfect Manhattan distance
                 if (matched_point.manhattan_distance == 0.0) {
