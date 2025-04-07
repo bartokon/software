@@ -8,6 +8,7 @@
 int main (void) {
     printf("Hello World!\n");
     srand(time(0)); // Seed for random number generation
+    
     constexpr size_t NUM_POINTS = 16;
     constexpr size_t NEIGHBORS = 4;
 

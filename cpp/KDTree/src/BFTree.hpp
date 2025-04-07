@@ -30,7 +30,9 @@ public:
         }
     }
 
-    struct Point_with_neighbors<T> search_nearest_neighbors(Point_3D<T> const &query_point) {
+    struct Point_with_neighbors<T> search_nearest_neighbors(
+        Point_3D<T> const &query_point
+    ) {
         struct Point_with_neighbors<T> pwn{
             query_point,
             std::vector<std::pair<Point_3D<T>, double>>()
@@ -50,7 +52,10 @@ public:
         > neighbors_queue;
         for (Point_3D<T> const &p : points) {
             if (p == query_point) continue; // Skip the point itself
-            double const distance = this->point_to_point_distance(query_point, p);
+            double const distance = this->point_to_point_distance(
+                query_point,
+                p
+            );
             if (neighbors_queue.size() < Neighbors) {
                 neighbors_queue.push(std::make_pair(p, distance));
             } else if (distance < neighbors_queue.top().second) {
@@ -67,7 +72,10 @@ public:
         return pwn;
     }
 
-    double point_to_point_distance(Point_3D<T> const &p1, Point_3D<T> const &p2) {
+    double point_to_point_distance(
+        Point_3D<T> const &p1,
+        Point_3D<T> const &p2
+    ) {
         double distance = std::pow(p1.x - p2.x, 2);
         distance += std::pow(p1.y - p2.y, 2);
         distance += std::pow(p1.z - p2.z, 2);
@@ -76,11 +84,15 @@ public:
     }
 
     void print() {
-        for (struct Point_with_neighbors<T> const &pwn : this->points_with_neighbors) {
+        for (
+                struct Point_with_neighbors<T> const &pwn :
+                this->points_with_neighbors
+            ) {
             printf("/*******************/\n");
             pwn.point.print();
             for (std::pair<Point_3D<T>, double> const &n : pwn.neighbors) {
-                printf("%s - Distance: %.3f\n",
+                printf(
+                    "%s - Distance: %.3f\n",
                     n.first.print_string().c_str(),
                     n.second
                 );

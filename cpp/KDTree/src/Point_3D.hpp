@@ -9,6 +9,7 @@ template <class T>
 class Point_3D {
 public:
     T x, y, z;
+
     // Constructor
     Point_3D(T x, T y, T z) : x(x), y(y), z(z) {}
 
@@ -22,7 +23,8 @@ public:
 
     std::string print_string() const {
         std::ostringstream oss;
-        oss << "Point(" << std::fixed << std::setprecision(3) << x << ", " << y << ", " << z << ")";
+        oss << "Point(" << std::fixed << std::setprecision(3)
+        << x << ", " << y << ", " << z << ")";
         return oss.str();
     }
 
@@ -31,9 +33,12 @@ public:
     }
 
     Point_3D<T> operator*(Point_3D<T> const &other) const {
-        return Point_3D<T>(this->x * other.x, this->y * other.y, this->z * other.z);
+        return Point_3D<T>(
+            this->x * other.x,
+            this->y * other.y,
+            this->z * other.z
+        );
     }
-
 };
 
 #endif

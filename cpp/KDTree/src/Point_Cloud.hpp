@@ -8,6 +8,7 @@ template <class T>
 class Point_Cloud {
 public:
     std::vector<Point_3D<T>> points;
+
     // Constructor
     Point_Cloud() {}
 
