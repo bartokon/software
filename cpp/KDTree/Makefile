@@ -2,7 +2,7 @@
 CC = g++-11
 
 # Compilation flags
-CFLAGS = -std=c++20 -Wall -Wextra -O2 -g
+CFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O0 -g
 #CFLAGS = -Wall -Wextra -O2 -g
 
 SRC_DIR = src
