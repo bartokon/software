@@ -31,12 +31,12 @@ print:
 all: $(TARGET)
 
 # Rule to compile object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HPP_SRCS)
 	@echo "Compiling $< to $@"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # Rule to link object files into the executable
-$(TARGET): $(OBJS) $(HPP_SRCS)
+$(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
 # Clean rule: remove object files and the executable
