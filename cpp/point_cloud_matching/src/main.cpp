@@ -3,7 +3,7 @@
 
 #include <Point_Cloud.hpp>
 #include <BFTree.hpp>
-#include <PointMatcher.hpp>
+#include <Point_Matcher.hpp>
 
 //TODO: Add check for different neighbors
 
