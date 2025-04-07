@@ -1,10 +1,8 @@
 #ifndef POINT_CLOUD_HPP
-#define POINT_CLOUD_HPP
-
-#include <vector>
-#include <random>
-
-#include <Point_3D.cpp>
+# define POINT_CLOUD_HPP
+# include <vector>
+# include <random>
+# include <Point_3D.hpp>
 
 template <class T>
 class Point_Cloud {

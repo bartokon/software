@@ -1,10 +1,9 @@
 #ifndef POINT_3D_HPP
-#define POINT_3D_HPP
-
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iomanip>
+# define POINT_3D_HPP
+# include <iostream>
+# include <string>
+# include <sstream>
+# include <iomanip>
 
 template <class T>
 class Point_3D {
@@ -34,7 +33,7 @@ public:
     Point_3D<T> operator*(Point_3D<T> const &other) const {
         return Point_3D<T>(this->x * other.x, this->y * other.y, this->z * other.z);
     }
-    
+
 };
 
 #endif

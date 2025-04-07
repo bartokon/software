@@ -1,12 +1,10 @@
 #ifndef BFTREE_HPP
-#define BFTREE_HPP
-
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <utility>
-
-#include <Point_3D.cpp>
+# define BFTREE_HPP
+# include <vector>
+# include <queue>
+# include <cmath>
+# include <utility>
+# include <Point_3D.hpp>
 
 template <class T>
 struct Point_with_neighbors {
@@ -22,6 +20,9 @@ public:
 
     // Constructor
     BFTree(std::vector<Point_3D<T>> points) : points(points){}
+
+    // Destructor
+    ~BFTree() {}
 
     void build_tree() {
         for (Point_3D<T> const &p : points) {
@@ -86,9 +87,6 @@ public:
             }
         }
     }
-
-    // Destructor
-    ~BFTree() {}
 
 };
 

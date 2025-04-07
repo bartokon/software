@@ -1,8 +1,9 @@
 #include <iostream>
 #include <random>
-#include <Point_Cloud.cpp>
-#include <BFTree.cpp>
-#include <PointMatcher.cpp>
+
+#include <Point_Cloud.hpp>
+#include <BFTree.hpp>
+#include <PointMatcher.hpp>
 
 int main (void) {
     printf("Hello World!\n");

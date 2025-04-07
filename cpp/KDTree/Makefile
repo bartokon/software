@@ -17,6 +17,8 @@ CPP_SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 # Object files (automatically generated from source files)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CPP_SRCS))
 
+HPP_SRCS = $(wildcard $(SRC_DIR)/*.hpp)
+
 # Name of the final executable
 TARGET = main.elf
 
@@ -34,7 +36,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # Rule to link object files into the executable
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(HPP_SRCS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
 # Clean rule: remove object files and the executable

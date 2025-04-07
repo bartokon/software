@@ -1,10 +1,8 @@
 #ifndef POINTMATCHER_HPP
-#define POINTMATCHER_HPP
-
-#include <vector>
-#include <numeric>
-
-#include <BFTree.cpp>
+# define POINTMATCHER_HPP
+# include <vector>
+# include <numeric>
+# include <BFTree.hpp>
 
 template <class T>
 struct Matched_Points {
