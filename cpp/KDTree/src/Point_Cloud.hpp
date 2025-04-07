@@ -2,6 +2,7 @@
 # define POINT_CLOUD_HPP
 # include <vector>
 # include <random>
+# include <cmath>
 # include <Point_3D.hpp>
 
 template <class T>
@@ -47,6 +48,21 @@ public:
         return this->points;
     }
 
+    // Method to set the points in the cloud
+    void set_points(std::vector<Point_3D<T>> const &points) {
+        this->points = points;
+    }
+
+    // Method to rotate the points in the cloud in X axis
+    void rotate_x(double const angle_degrees) {
+        double const angle_radians = angle_degrees * M_PI / 180.0;
+        double const cos_theta = std::cos(angle_radians);
+        double const sin_theta = std::sin(angle_radians);
+        for (Point_3D<T> &p : points) {
+            p.y = p.y * cos_theta - p.z * sin_theta;
+            p.z = p.y * sin_theta + p.z * cos_theta;
+        }
+    }
 };
 
 #endif
