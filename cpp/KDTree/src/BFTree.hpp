@@ -12,14 +12,16 @@ struct Point_with_neighbors {
     std::vector<std::pair<Point_3D<T>, double>> neighbors;
 };
 
-template <class T, size_t Neighbors = 4>
+template <class T>
 class BFTree {
 public:
     std::vector<Point_3D<T>> points;
     std::vector<struct Point_with_neighbors<T>> points_with_neighbors;
+    const size_t NEIGHBORS;
 
     // Constructor
-    BFTree(std::vector<Point_3D<T>> points) : points(points){}
+    BFTree(std::vector<Point_3D<T>> points, size_t Neighbors = 4) :
+        points(points), NEIGHBORS(Neighbors) {}
 
     // Destructor
     ~BFTree() {}
@@ -56,7 +58,7 @@ public:
                 query_point,
                 p
             );
-            if (neighbors_queue.size() < Neighbors) {
+            if (neighbors_queue.size() < this->NEIGHBORS) {
                 neighbors_queue.push(std::make_pair(p, distance));
             } else if (distance < neighbors_queue.top().second) {
                 neighbors_queue.pop();
