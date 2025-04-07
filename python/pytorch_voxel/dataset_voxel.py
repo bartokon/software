@@ -12,7 +12,8 @@ import numpy as np
 from torch_geometric.transforms import SamplePoints
 from p_tqdm import p_umap
 from collections import Counter
-from sklearn.utils.class_weight import compute_class_weight
+import pandas as pd
+import filecmp
 
 class ModelNet40_aligned(Dataset):
     def __init__(self,
@@ -50,6 +51,7 @@ class ModelNet40_aligned(Dataset):
         for class_name in self.classes:
             if (not os.path.isdir(f"{root}/{class_name}")):
                 self.untar()
+                self.clean()
 
     @cached_property
     def unprocessed_file_names(self):
@@ -87,6 +89,46 @@ class ModelNet40_aligned(Dataset):
         if (not os.path.isfile(f"{self.root}/modelnet40_manually_aligned.tar")):
             RuntimeError(".tar not found. Use download = True option.")
         os.system(f"tar -xvzf {self.root}/modelnet40_manually_aligned.tar -C {self.root}")
+
+    def clean(self):
+        def get_path(f1, train = self.train):
+            f1_c, f1_name = f1.rsplit("_", maxsplit = 1)
+            return f"{self.root}/{f1_c}/train/{f1}.off", f"{self.root}/{f1_c}/test/{f1}.off"
+
+        def compare_and_remove(f1, f2):
+            if (os.path.isfile(f1) and os.path.isfile(f2)):
+                if (filecmp.cmp(f1, f2, shallow=True)):
+                    os.remove(f2)
+                    print(f"Removed duplicate {f1} = {f2}")
+
+        if (not os.path.isfile(f"main.zip")):
+            os.system("wget https://github.com/oqton/M40-cleaning/archive/refs/heads/main.zip")
+        if (not os.path.isdir("M40-cleaning-main")):
+            os.system("unzip main.zip")
+
+        #Remove duplicates
+        duplicates_vfinal = pd.read_csv("M40-cleaning-main/duplicates_vfinal.csv", index_col = 0)
+        for f1 in duplicates_vfinal['obj_id']:
+            for f2 in duplicates_vfinal['obj_id']:
+                if (f1 == f2):
+                    continue
+                f1_path_train, f1_path_test = get_path(f1)
+                f2_path_train, f2_path_test = get_path(f2)
+                compare_and_remove(f1_path_test, f1_path_train)
+                compare_and_remove(f1_path_test, f2_path_test)
+                compare_and_remove(f1_path_train, f2_path_train)
+                compare_and_remove(f1_path_train, f2_path_test)
+
+        relabel_vfinal = pd.read_csv("M40-cleaning-main/relabel_vfinal.csv")
+        for obj, new_label in zip(relabel_vfinal['obj_id'], relabel_vfinal['new_label']):
+            obj_path_train, obj_path_test = get_path(obj)
+            if (new_label == 'discard' or True): #Remove all for now...
+                if (os.path.isfile(obj_path_train)):
+                    os.remove(obj_path_train)
+                    print(f"Removed: {obj}")
+                if (os.path.isfile(obj_path_test)):
+                    os.remove(obj_path_test)
+                    print(f"Removed: {obj}")
 
     def voxelize(self, points, vox_count: int = 1):
         vox_array = torch.zeros((vox_count, vox_count, vox_count), dtype=torch.float32)
@@ -191,7 +233,7 @@ class ModelNet40_aligned(Dataset):
 
 if __name__ == "__main__":
     classes = [f.name for f in pathlib.Path("dataset").iterdir() if f.is_dir()]
-    if (0):
+    if (1):
         dataset = ModelNet40_aligned(
             root = "dataset",
             classes = classes,
@@ -209,3 +251,5 @@ if __name__ == "__main__":
             target_transform = None,
             download = True
         )
+    dataset.clean()
+    dataset.get_weights()

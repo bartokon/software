@@ -1,0 +1,7 @@
+logs
+dataset
+M40-cleaning-main
+model_checkpoint
+models
+*.pt
+*.zip
