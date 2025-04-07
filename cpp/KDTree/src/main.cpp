@@ -6,11 +6,12 @@
 #include <PointMatcher.hpp>
 
 int main (void) {
-    printf("Hello World!\n");
+    printf("Hello World!\n\n");
     srand(time(0)); // Seed for random number generation
-    
+
     constexpr size_t NUM_POINTS = 16;
     constexpr size_t NEIGHBORS = 4;
+    constexpr double MANHATTAN_DISTANCE_THRESHOLD = 0.2;
 
     Point_Cloud<float> point_cloud_0;
     point_cloud_0.generate_random_points(NUM_POINTS);
@@ -27,7 +28,8 @@ int main (void) {
         BF_tree_1.points_with_neighbors
     );
 
-    point_matcher.cosine_similarity();
-
+    point_matcher.similarity(MANHATTAN_DISTANCE_THRESHOLD);
+    point_matcher.print_matched_points();
+    printf("Point Matcher finished.\n");
     return 0;
 }
