@@ -4,6 +4,7 @@
 # include <queue>
 # include <cmath>
 # include <utility>
+# include <future>
 # include <Point_3D.hpp>
 
 template <class T>
@@ -27,8 +28,32 @@ public:
     ~BFTree() {}
 
     void build_tree() {
-        for (Point_3D<T> const &p : points) {
-            points_with_neighbors.push_back(this->search_nearest_neighbors(p));
+        points_with_neighbors.reserve(points.size());
+        std::vector<std::future<struct Point_with_neighbors<T>>> futures;
+        size_t const MAX_THREADS = std::thread::hardware_concurrency();
+        futures.reserve(MAX_THREADS);
+        size_t active_threads = 0;
+
+        printf("Building tree with %zu threads...\n", MAX_THREADS);
+        for (size_t i = 0; i < points.size(); ++i) {
+            if (active_threads >= MAX_THREADS) {
+                for (auto &future : futures) {
+                    points_with_neighbors.push_back(future.get());
+                }
+                futures.clear();
+                active_threads = 0;
+            }
+            futures.emplace_back(std::async(
+                std::launch::async,
+                [this, i]() {
+                    return this->search_nearest_neighbors(points[i]);
+                }
+            ));
+            ++active_threads;
+        }
+
+        for (auto &future : futures) {
+            points_with_neighbors.push_back(future.get());
         }
     }
 

@@ -70,7 +70,7 @@ public:
         return distance;
     }
 
-    // Method to match points based on cosine similarity
+    // Method to match points based on manhattan distance
     void similarity(
         double manhattan_distance_threshold = 0.1
     ) {
@@ -81,7 +81,6 @@ public:
                 -1.0,
                 std::numeric_limits<double>::max()
             );
-            matched_point.point_0 = points_with_neighbors_0[i];
             for (size_t j = 0; j < points_with_neighbors_1.size(); ++j) {
                 double const cs = this->cosine_similarity(
                     points_with_neighbors_0[i],
@@ -101,6 +100,70 @@ public:
                     break;
                 }
             }
+            if (matched_point.manhattan_distance < manhattan_distance_threshold) {
+                matched_points.push_back(matched_point);
+            }
+        }
+    }
+
+    // Method to match points based on manhattan distance
+    void similarity_mp(
+        double manhattan_distance_threshold = 0.1
+    ) {
+        std::vector<std::future<struct Matched_Points<T>>> futures;
+        size_t const MAX_THREADS = std::thread::hardware_concurrency();
+        futures.reserve(MAX_THREADS);
+        size_t active_threads = 0;
+
+        printf("Matching points with %zu threads...\n", MAX_THREADS);
+        for (size_t i = 0; i < points_with_neighbors_0.size(); ++i) {
+            if (active_threads >= MAX_THREADS) {
+                for (auto &future : futures) {
+                    struct Matched_Points<T> matched_point = future.get();
+                    if (matched_point.manhattan_distance < manhattan_distance_threshold) {
+                        matched_points.push_back(matched_point);
+                    }
+                }
+                futures.clear();
+                active_threads = 0;
+            }
+            futures.emplace_back(
+                std::async(
+                    std::launch::async,
+                    [this, i]() {
+                        struct Matched_Points<T> matched_point(
+                            points_with_neighbors_0[i],
+                            points_with_neighbors_1[0],
+                            -1.0,
+                            std::numeric_limits<double>::max()
+                        );
+                        for (size_t j = 0; j < points_with_neighbors_1.size(); ++j) {
+                            double const cs = this->cosine_similarity(
+                                points_with_neighbors_0[i],
+                                points_with_neighbors_1[j]
+                            );
+                            double const md = this->manhattan_distance(
+                                points_with_neighbors_0[i],
+                                points_with_neighbors_1[j]
+                            );
+                            if (md < matched_point.manhattan_distance) {
+                                matched_point.manhattan_distance = md;
+                                matched_point.cosine_similarity = cs;
+                                matched_point.point_1 = points_with_neighbors_1[j];
+                            }
+                            //Perfect Manhattan distance
+                            if (matched_point.manhattan_distance == 0.0) {
+                                break;
+                            }
+                        }
+                        return matched_point;
+                    }
+                )
+            );
+            ++active_threads;
+        }
+        for (auto &future : futures) {
+            struct Matched_Points<T> matched_point = future.get();
             if (matched_point.manhattan_distance < manhattan_distance_threshold) {
                 matched_points.push_back(matched_point);
             }
