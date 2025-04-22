@@ -44,9 +44,10 @@ clean:
 	rm -f $(OBJS)
 	rm -f $(TARGET)
 
-# Optional: run the executable
+# Rule to create the object directory if it doesn't exist
 $(OBJ_DIR):
 	@if [ ! -d "$(OBJ_DIR)" ]; then mkdir -p $(OBJ_DIR); fi
 
+# Optional: run the executable
 run: obj $(TARGET)
 	./$(TARGET)
