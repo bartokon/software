@@ -45,5 +45,8 @@ clean:
 	rm -f $(TARGET)
 
 # Optional: run the executable
-run: $(TARGET)
+obj:
+	@if [ ! -d "$(OBJ_DIR)" ]; then mkdir -p $(OBJ_DIR); fi
+
+run: obj $(TARGET)
 	./$(TARGET)
