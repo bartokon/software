@@ -160,3 +160,44 @@ cython_debug/
 #.idea/
 
 *.pdf
+
+# Project-specific
+
+# C++ build artifacts
+*.o
+*.elf
+*.out
+*.exe
+obj/
+cuda/
+hip/
+dpc/
+
+# Data directories
+data/
+dataset/
+models/
+model_checkpoint/
+logs/*.pdf
+logs/*.txt
+
+# Model files
+*.pt
+*.pth
+*.onnx
+*.h5
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar

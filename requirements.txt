@@ -1,0 +1,17 @@
+# Core dependencies for the software repository
+
+# Deep Learning
+torch>=2.0.0
+torch-geometric>=2.3.0
+
+# Numerical computing
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Optional: Uncomment if needed
+# pandas>=2.0.0
+# scikit-learn>=1.3.0
+# open3d>=0.17.0  # For advanced point cloud processing
